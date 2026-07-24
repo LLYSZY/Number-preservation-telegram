@@ -901,7 +901,7 @@ const HTML_CONTENT = `<!DOCTYPE html>
 
 const TG_SESSION_TTL_SECONDS = 900;
 const TG_START_KEYBOARD_TTL_SECONDS = 108000;
-const SITE_URL = "https://phone.betony.cc.cd";
+// Site URL is derived from the current webhook request.
 
 function jsonResponse(data, headers = {}, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -1140,10 +1140,10 @@ function getPlatformClearConfirmKeyboard(simIndex) {
   };
 }
 
-function getSiteText() {
+function getSiteText(siteUrl) {
   return `🌐 <b>eSIM 保号看板地址</b>
 
-${SITE_URL}
+${siteUrl}
 
 你可以在网页端查看、编辑、续期号码。`;
 }
@@ -1453,7 +1453,7 @@ async function handleTelegramWebhook(request, env, tgToken, tgChat, corsHeaders)
   }
 
   if (command === "/site") {
-    await sendTelegramMessage(tgToken, chatId, getSiteText(), getMainKeyboard());
+    await sendTelegramMessage(tgToken, chatId, getSiteText(new URL(request.url).origin), getMainKeyboard());
     return jsonResponse({ ok: true }, corsHeaders);
   }
 
